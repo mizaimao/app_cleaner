@@ -18,6 +18,7 @@ mkdir -p "$APP/Contents/Resources"
 
 cp "$BIN_PATH/AppCleaner" "$APP/Contents/MacOS/AppCleaner"
 cp "$ROOT/Resources/Info.plist" "$APP/Contents/Info.plist"
+cp "$ROOT/Resources/AppCleaner.icns" "$APP/Contents/Resources/AppCleaner.icns"
 
 # Ad-hoc sign so macOS will run it locally without Gatekeeper complaints.
 codesign --force --deep --sign - "$APP" 2>/dev/null || true
