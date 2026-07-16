@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 import UniformTypeIdentifiers
 
 struct ContentView: View {
@@ -8,6 +9,10 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 0) {
             dropZone
+
+            if model.isAppRunning {
+                runningBanner
+            }
 
             if !model.items.isEmpty {
                 Divider()
@@ -82,6 +87,21 @@ struct ContentView: View {
         return true
     }
 
+    // MARK: - Running-app warning
+
+    private var runningBanner: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(.orange)
+            Text("This app is running. Quit it first, or it may recreate files after you trash them.")
+                .font(.callout)
+            Spacer()
+            Button("Quit App") { model.quitRunningApp() }
+        }
+        .padding(10)
+        .background(Color.orange.opacity(0.12))
+    }
+
     // MARK: - Item list
 
     private var itemList: some View {
@@ -105,9 +125,18 @@ struct ContentView: View {
                         .monospacedDigit()
                         .frame(width: 78, alignment: .trailing)
                 }
+                .contentShape(Rectangle())
+                .onTapGesture(count: 2) { reveal(item.url) }
+                .contextMenu {
+                    Button("Reveal in Finder") { reveal(item.url) }
+                }
             }
         }
         .listStyle(.inset)
+    }
+
+    private func reveal(_ url: URL) {
+        NSWorkspace.shared.activateFileViewerSelecting([url])
     }
 
     // MARK: - Footer

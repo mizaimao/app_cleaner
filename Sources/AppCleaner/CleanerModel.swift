@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 @MainActor
 final class CleanerModel: ObservableObject {
@@ -7,6 +8,9 @@ final class CleanerModel: ObservableObject {
     @Published var items: [LeftoverItem] = []
     @Published var isScanning = false
     @Published var statusMessage: String?
+    @Published var isAppRunning = false
+
+    private var runningApp: NSRunningApplication?
 
     func handleDrop(_ url: URL) {
         guard url.pathExtension.lowercased() == "app" else {
@@ -30,7 +34,27 @@ final class CleanerModel: ObservableObject {
                 self.statusMessage = result.items.count == 1
                     ? "Only the app bundle found — no leftover files matched."
                     : nil
+                self.refreshRunningState()
             }
+        }
+    }
+
+    /// Checks whether the dropped app is currently running.
+    func refreshRunningState() {
+        guard let bid = bundleID, !bid.isEmpty else {
+            runningApp = nil
+            isAppRunning = false
+            return
+        }
+        runningApp = NSWorkspace.shared.runningApplications.first { $0.bundleIdentifier == bid }
+        isAppRunning = runningApp != nil
+    }
+
+    /// Asks the running app to quit, then re-checks after a moment.
+    func quitRunningApp() {
+        runningApp?.terminate()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) { [weak self] in
+            self?.refreshRunningState()
         }
     }
 

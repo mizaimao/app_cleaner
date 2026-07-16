@@ -61,11 +61,13 @@ enum LeftoverScanner {
             (userLib.appendingPathComponent("WebKit"), "WebKit"),
             (userLib.appendingPathComponent("Cookies"), "Cookies"),
             (userLib.appendingPathComponent("LaunchAgents"), "Launch Agent"),
+            (userLib.appendingPathComponent("Application Scripts"), "Application Scripts"),
             (sysLib.appendingPathComponent("Application Support"), "Application Support (System)"),
             (sysLib.appendingPathComponent("Caches"), "Cache (System)"),
             (sysLib.appendingPathComponent("Preferences"), "Preferences (System)"),
             (sysLib.appendingPathComponent("LaunchAgents"), "Launch Agent (System)"),
             (sysLib.appendingPathComponent("LaunchDaemons"), "Launch Daemon (System)"),
+            (sysLib.appendingPathComponent("PrivilegedHelperTools"), "Helper Tool (System)"),
         ]
 
         let bid = bundleID.lowercased()
